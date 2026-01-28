@@ -2,13 +2,12 @@ use clap::Parser;
 use log::{debug, info};
 
 use crate::{
-    Cli::{CLIArguments, Commands},
+    cli::{CLIArguments, Commands},
     peer::start_peer,
     webui::start_webui,
 };
 
-mod Cli;
-
+mod cli;
 mod peer;
 mod webui;
 
@@ -20,9 +19,6 @@ fn main() {
     debug!("CLI agruments parsed successfully: {:?}", cli_args);
 
     match &cli_args.command {
-        Some(Commands::Test { echo_str }) => {
-            println!("Echo: {}", echo_str);
-        }
         Some(Commands::StartPeer {}) => {
             start_peer();
         }
