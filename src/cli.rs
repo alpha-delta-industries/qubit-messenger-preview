@@ -6,8 +6,6 @@ pub enum Commands {
         #[arg(short, long)]
         echo_str: String,
     },
-    StartPeer {},
-    StartWebUI {},
 }
 
 #[derive(Parser, Debug)]
