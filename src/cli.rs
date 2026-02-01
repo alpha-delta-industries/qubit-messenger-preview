@@ -2,8 +2,10 @@ use clap::{Parser, Subcommand};
 
 #[derive(Debug, Subcommand)]
 pub enum Commands {
-    StartPeer {},
-    StartWebUI {},
+    Test {
+        #[arg(short, long)]
+        echo_str: String,
+    },
 }
 
 #[derive(Parser, Debug)]
