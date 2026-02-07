@@ -1,55 +1,42 @@
-use iced::widget::{button, column, text};
+use iced::widget::{button, column};
 use iced::{Element, Theme};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use crate::gui::pages::get_page_by_str;
+
+mod pages;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum Message {
-    GoToHomePage,
-    GoToTestPage,
+    GoToPage(String),
 }
 
-#[derive(Debug)]
-enum Page {
-    Home,
-    Test,
+trait Page {
+    fn view(&self) -> Element<'static, Message>;
 }
 
-impl Default for Page {
-    fn default() -> Self {
-        Self::Home
-    }
-}
-
-impl Page {
-    pub fn view(&self) -> Element<'static, Message> {
-        match self {
-            Self::Home => text!("Home page content.").into(),
-            Self::Test => text!("Test page content.").into(),
-        }
-    }
-}
-
-#[derive(Default)]
 pub struct App {
-    page: Page,
+    page: Box<dyn Page>,
 }
 
 impl App {
     fn new() -> Self {
-        Self::default()
+        Self {
+            page: Box::new(pages::home::Home::new()),
+        }
     }
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::GoToHomePage => self.page = Page::Home,
-            Message::GoToTestPage => self.page = Page::Test,
+            Message::GoToPage(page_name) => self.page = get_page_by_str(page_name.as_str()),
         }
     }
 
     fn view(&self) -> Element<'_, Message> {
         column![
             self.page.view(),
-            button("Go home").on_press(Message::GoToHomePage),
-            button("Go test").on_press(Message::GoToTestPage),
+            button("Go home").on_press(Message::GoToPage("home".to_string())),
+            button("Go test").on_press(Message::GoToPage("test".to_string())),
+            button("Go 404").on_press(Message::GoToPage("404".to_string())),
         ]
         .spacing(10)
         .into()
