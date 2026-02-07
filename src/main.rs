@@ -1,10 +1,14 @@
 mod cli;
+mod gui;
 mod logging;
 
 use clap::Parser;
-use log::{debug, trace};
+use log::{debug, error, trace};
 
-use crate::cli::{CLIArguments, Commands};
+use crate::{
+    cli::{CLIArguments, Commands},
+    gui::App,
+};
 
 fn main() {
     logging::init_logger();
@@ -18,7 +22,15 @@ fn main() {
             println!("Echo: {}", echo_str);
         }
         None => {
-            println!("None command received.")
+            trace!("Default command received. Running GUI...");
+            match App::run() {
+                Err(e) => {
+                    error!("GUI execution finished with error: {}", e);
+                }
+                Ok(_) => {
+                    trace!("GUI execution finished.");
+                }
+            }
         }
     }
 }
