@@ -3,32 +3,53 @@ use iced::{Element, Theme};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Message {
-    Increment,
-    Decrement,
+    GoToHomePage,
+    GoToTestPage,
+}
+
+#[derive(Debug)]
+enum Page {
+    Home,
+    Test,
+}
+
+impl Default for Page {
+    fn default() -> Self {
+        Self::Home
+    }
+}
+
+impl Page {
+    pub fn view(&self) -> Element<'static, Message> {
+        match self {
+            Self::Home => text!("Home page content.").into(),
+            Self::Test => text!("Test page content.").into(),
+        }
+    }
 }
 
 #[derive(Default)]
 pub struct App {
-    counter: isize,
+    page: Page,
 }
 
 impl App {
     fn new() -> Self {
-        Self { counter: 0 }
+        Self::default()
     }
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::Decrement => self.counter -= 1,
-            Message::Increment => self.counter += 1,
+            Message::GoToHomePage => self.page = Page::Home,
+            Message::GoToTestPage => self.page = Page::Test,
         }
     }
 
     fn view(&self) -> Element<'_, Message> {
         column![
-            text(self.counter.to_string()).size(20),
-            button("Increment").on_press(Message::Increment),
-            button("Decrement").on_press(Message::Decrement),
+            self.page.view(),
+            button("Go home").on_press(Message::GoToHomePage),
+            button("Go test").on_press(Message::GoToTestPage),
         ]
         .spacing(10)
         .into()
